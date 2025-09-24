@@ -52,6 +52,21 @@ export function getAllPostIds() {
   //       id: 'pre-rendering'
   //     }
   //   }
+  //   {
+  //     params: {
+  //       id: 'fist-post'
+  //     }
+  //   }
+  //   {
+  //     params: {
+  //       id: 'second-post'
+  //     }
+  //   }
+  //   {
+  //     params: {
+  //       id: 'thrid-post'
+  //     }
+  //   }
   // ]
   return fileNames.map((fileName) => {
     return {

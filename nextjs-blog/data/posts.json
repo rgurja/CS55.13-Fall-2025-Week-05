@@ -1,0 +1,24 @@
+[
+  {
+    "id": "1",
+    "title": "First Post Debugging Imports",
+    "date": "2025-09-14",
+    "author": "Rahel Gurja",
+    "contentHtml": "<p>Imports can be the most frustrating part of a modern JS app. Tips: Double-check file names and casing (case-sensitive on many hosts). Use relative paths (`./`, `../`) carefully.</p>"
+  },
+  {
+    "id": "2",
+    "title": "Second Post Building Components",
+    "date": "2025-09-01",
+    "author": "Rahel Gurja",
+    "contentHtml": "<p>This is the second post. In this entry I write about creating reusable React components and how they help keep a project modular and maintainable.</p><ui><li> Components are reusable.</li><li> They help isolate state and styling.</li><li> They make code easier to read.</li><li> Good naming makes them easy to find.</li></ul></p>"
+  },
+  {
+    "id": "3",
+    "title": "Third Post Styling Patterns ",
+    "date": "2025-09-08",
+    "author": "Rahel Gurja",
+    "contentHtml": "<p>Styling can be done many ways: global CSS, CSS modules, styled-components I compare:<ol><li> Isolation vs. convenience.</li><li>Learning curve vs. speed.</li><li>How to decide per-project.</li></ol></p>"
+  }
+]
+
