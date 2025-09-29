@@ -1,95 +1,64 @@
-import fs from 'fs';
-import path from 'path';
+import fs from 'fs'; // Node.js filesystem module for reading files
+import path from 'path'; // Node.js path module for handling file paths
 
-// Directory where the JSON data file is stored. Uses the current
-// working directory (project root) and the `data` folder.
-const dataDir = path.join(process.cwd(), 'data');
+const dataDir = path.join(process.cwd(), 'data'); // Absolute path to the project's `data` directory
 
-/**
- * Read `data/posts.json`, sort posts by title, and return an array
- * of simplified post objects suitable for listing pages.
- *
- * Returns: Array of objects with keys: `id` (string), `title`, `date`,
- * `author`, `contentHtml`.
- *
- * Note: This function performs synchronous file I/O which is acceptable
- * for simple static-site generation but should be changed to async I/O
- * in a production server environment.
- */
-export function getSortedPostsData() {
-    const filePath = path.join(dataDir, 'posts.json');
-    const jsonString = fs.readFileSync(filePath, 'utf8');
-    const jsonObj = JSON.parse(jsonString);
+export function getSortedPostsData() { // Exported function to return sorted post data
+    const filePath = path.join(dataDir, 'posts.json'); // Path to the posts JSON file
+    const jsonString = fs.readFileSync(filePath, 'utf8'); // Read file contents synchronously as UTF-8
+    const jsonObj = JSON.parse(jsonString); // Parse the JSON string into an array/object
 
-    // Sort posts alphabetically by title using localeCompare for
-    // proper string comparison (handles different character sets).
-    jsonObj.sort(function (a, b) {
-        return a.title.localeCompare(b.title);
+    
+    jsonObj.sort(function (a, b) { // Sort in-place using a comparator
+        return a.title.localeCompare(b.title); // Compare titles with locale-aware comparison
     });
 
-    // Map to a normalized shape. Ensure `id` is a string because Next.js
-    // params are typically strings.
-    return jsonObj.map(item => {
-        return {
-          id: item.id.toString(),
-          title: item.title,
-          date: item.date,
-          author: item.author,
-          contentHtml: item.contentHtml
-        }
-      });
-}
+    
+    return jsonObj.map(item => { // Transform each raw post into a normalized object
+        return { // Return the normalized post object
+          id: item.id.toString(), // Ensure id is a string
+          title: item.title, // Post title
+          date: item.date, // Post date
+          author: item.author, // Post author
+          contentHtml: item.contentHtml // HTML content of the post
+        } // End returned object
+      }); // End map and return the resulting array
+} // End getSortedPostsData
 
-/**
- * Return an array of objects with the shape required by Next.js
- * `getStaticPaths` — i.e. [{ params: { id: '...' } }, ...].
- *
- * This reads `data/posts.json` and returns the `id` values as strings.
- */
-export function getAllPostIds() {
-    const filePath = path.join(dataDir, 'posts.json');
-    const jsonString = fs.readFileSync(filePath, 'utf8');
-    const jsonObj = JSON.parse(jsonString);
+export function getAllPostIds() { // Exported function to return post ids for Next.js paths
+    const filePath = path.join(dataDir, 'posts.json'); // Path to the posts JSON file
+    const jsonString = fs.readFileSync(filePath, 'utf8'); // Read file contents synchronously
+    const jsonObj = JSON.parse(jsonString); // Parse JSON into array/object
 
-    // The console.log can be helpful during development but will print all
-    // posts on every call; remove or guard it in production if noisy.
-    console.log(jsonObj);
+    
+    console.log(jsonObj); // Log the parsed posts (development-only)
 
-    return jsonObj.map(item => {
-        return {
-          params: {
-            id: item.id.toString()
-          }
-        }
-      });
-}
+    return jsonObj.map(item => { // Map posts into the shape required by getStaticPaths
+        return { // Return the params wrapper for each post id
+          params: { // params object expected by Next.js
+            id: item.id.toString() // Ensure id is a string for route params
+          } // End params
+        } // End returned object
+      }); // End map and return array
+} // End getAllPostIds
 
-/**
- * Find a single post by `id` (string or number). If no matching post
- * is found, return a simple "Not found" placeholder object.
- *
- * Input: `id` should be the string form used in route params.
- * Returns: the matching post object from `posts.json` (unmodified),
- * or a placeholder object when not found.
- */
-export function getPostData(id) {
-    const filePath = path.join(dataDir, 'posts.json');
-    const jsonString = fs.readFileSync(filePath, 'utf8');
-    const jsonObj = JSON.parse(jsonString);
 
-    // Filter for the matching id. Convert stored ids to string to match
-    // route param types.
-    const objReturned = jsonObj.filter(obj => obj.id.toString() === id);
-      if (objReturned.length === 0) {
-        return {
-          id: id,
-          title: 'Not found',
-          date: '',
-          contentHtml: 'Not found',
-          author:''
-        }
-      } else {
+export function getPostData(id) { // Exported function to get a single post by id
+    const filePath = path.join(dataDir, 'posts.json'); // Path to the posts JSON file
+    const jsonString = fs.readFileSync(filePath, 'utf8'); // Read file contents synchronously
+    const jsonObj = JSON.parse(jsonString); // Parse JSON into array/object
+    
+    const objReturned = jsonObj.filter(obj => obj.id.toString() === id); // Find posts with matching id
+      if (objReturned.length === 0) { // If no match found
+        return { // Return a placeholder "Not found" object
+          id: id, // Echo the requested id
+          title: 'Not found', // Placeholder title
+          date: '', // Empty date
+          contentHtml: 'Not found', // Placeholder content
+          author:'' // Empty author
+        } // End placeholder object
+      } else { // If at least one match found
         
-        return objReturned[0];
-      }
-}
+        return objReturned[0]; // Return the first matching post object
+      } // End if/else
+} // End getPostData
